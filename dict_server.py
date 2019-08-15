@@ -28,16 +28,16 @@ class Server:
             elif data == "S":
                 self.do_seekWord(c,username)
             elif data == "H":
-                self.do_history(c)
+                self.do_history(c,username)
             elif data == "E":
                 break
 
     # 处理查看历史记录请求
-    def do_history(self,c):
+    def do_history(self,c,username):
         c.recv(1024)
-        sql = "select * from history"
-        self.cur.execute(sql)
-        resule = self.cur.fetchmany(10)
+        sql = "select * from history where username=%s order by id desc limit 10"
+        self.cur.execute(sql,[username])
+        resule = self.cur.fetchall()
         for item in resule:
             for i in item:
                 c.send(str(i).encode())
